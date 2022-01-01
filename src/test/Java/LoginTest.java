@@ -1,46 +1,67 @@
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
 
 public class LoginTest {
 
-    public void loginWithValidCredentials(){
+    private WebDriver driver;
+
+    @Before
+    public void openBrowser(){
         System.setProperty("webdriver.chrome.driver", "resources/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
         driver.get("http://testfasttrackit.info/selenium-test/");
-        WebElement accountLink = driver.findElement(By.cssSelector("#header > div > div.skip-links > div > a > span.label"));
+    }
+
+    @Test
+    public void loginWithValidCredentials(){
+        WebElement accountLink = driver.findElement(By.cssSelector(".skip-account .label"));
         accountLink.click();
-        driver.findElement(By.cssSelector("#header-account > div > ul > li.last > a")).click();
+        driver.findElement(By.cssSelector("[title='Log In']")).click();
         driver.findElement(By.id("email")).sendKeys("ramona.mo@mailinator.com");
         driver.findElement(By.id("pass")).sendKeys("123456");
         driver.findElement(By.id("send2")).click();
-        String welcomeText = driver.findElement(By.cssSelector("body > div > div.page > div.main-container.col2-left-layout > div > div.col-main > div.my-account > div > div.welcome-msg > p.hello > strong")).getText();
-        if (welcomeText.equals("Hello, Ramona Mo!"))
-            System.out.println("Success");
-        else {
-            System.err.println("Fail");
-        }
-
-        driver.quit();
+        WebElement welcomeTextElement = driver.findElement(By.cssSelector(".hello strong"));
+        String welcomeText = welcomeTextElement.getText();
+//        if (welcomeText.equals("Hello, Ramona Mo!"))
+//            System.out.println("Success");
+//        else {
+//            System.err.println("Fail");
+//        }
+        Assert.assertTrue(welcomeTextElement.isDisplayed());
+        Assert.assertEquals("Hello, Ramona Mo!", welcomeText);
     }
 
+    @Test
     public void loginWithInvalidCredentials(){
-        System.setProperty("webdriver.chrome.driver","resources/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.get("http://testfasttrackit.info/selenium-test/");
-        WebElement accountLink = driver.findElement(By.cssSelector("#header > div > div.skip-links > div > a > span.label"));
+        WebElement accountLink = driver.findElement(By.cssSelector(".skip-account .label"));
         accountLink.click();
-        driver.findElement(By.cssSelector("#header-account > div > ul > li.last > a")).click();
+        driver.findElement(By.cssSelector("[title='Log In']")).click();
         driver.findElement(By.id("email")).sendKeys("ramona.mo@mailinator.org");
         driver.findElement(By.id("pass")).sendKeys("123456");
         driver.findElement(By.id("send2")).click();
-        String text = driver.findElement(By.cssSelector("body > div > div.page > div.main-container.col1-layout > div > div > div.account-login > ul > li > ul > li > span")).getText();
+        WebElement invalidTextElement = driver.findElement(By.cssSelector(".error-msg span"));
+        String invalidText = invalidTextElement.getText();
 
-        if (text.equals("Invalid login or password."))
-            System.out.println("Success");
-        else
-            System.err.println("Fail");
+//        if (text.equals("Invalid login or password."))
+//            System.out.println("Success");
+//        else
+//            System.err.println("Fail");
+
+        Assert.assertTrue(invalidTextElement.isDisplayed());
+        Assert.assertEquals("Invalid login or password.", invalidText);
+    }
+
+    @After
+    public void closePage(){
         driver.quit();
     }
     }
