@@ -58,6 +58,11 @@ public class LoginTest {
 
         Assert.assertTrue(invalidTextElement.isDisplayed());
         Assert.assertEquals("Invalid login or password.", invalidText);
+
+        WebElement stateDropdown = driver.findElement(By.id("billing:region_id"));
+        Select select = new Select(stateDropdown);
+        select.selectByIndex(1);
+        select.selectByVisibleText("Alaska");
     }
 
     @After

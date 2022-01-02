@@ -1,4 +1,5 @@
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -20,8 +21,19 @@ public class WishListTest {
 
     @Test
     public void addToWishlist(){
+        WebElement accountLink = driver.findElement(By.cssSelector(".skip-account .label"));
+        accountLink.click();
+        driver.findElement(By.cssSelector("[title='Log In']")).click();
+        driver.findElement(By.id("email")).sendKeys("ramona.mo@mailinator.com");
+        driver.findElement(By.id("pass")).sendKeys("123456");
+        driver.findElement(By.id("send2")).click();
         driver.findElement(By.cssSelector(".level0:nth-child(5)")).click();
         driver.findElement(By.cssSelector(".link-wishlist")).click();
+
+        WebElement addedToWishlist = driver.findElement(By.cssSelector(".success-msg span a"));
+        String addedToWishlistText = addedToWishlist.getText();
+        Assert.assertTrue(addedToWishlist.isDisplayed());
+
     }
 
     @After
